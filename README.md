@@ -3,13 +3,6 @@
 
 # WhatsApp Bot
 
-> Create a simple WhatsApp Bot using NodeJS
->
->
-</div>
-[![npm version](https://img.shields.io/npm/v/@open-wa/wa-automate.svg?color=green)](https://www.npmjs.com/package/@open-wa/wa-automate)
-![node](https://img.shields.io/node/v/@open-wa/wa-automate)
-
 ## Installation
 
 ```bash
