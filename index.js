@@ -1,7 +1,7 @@
 const { create, decryptMedia } = require('@open-wa/wa-automate')
 const fs = require('fs-extra')
 const moment = require('moment')
-const fbdown = require('fb-video-downloader');
+const fbvid = require('fbvideos');
 
 const serverOption = {
     headless: true,
@@ -86,24 +86,19 @@ async function msgHandler (client, message) {
                     client.sendText(from, 'Hai')
                     break
                     case '#fb':
-                    if (args.length == 2) {
-                        const vidURL = args[1]
-                        fbdown.getInfo(vidURL)
-                        .then((info) => {
-
-                            if (info.download.hd !== undefined) {
-                                client.sendFileFromUrl(from, info.download.hd, "video.mp4", "HD Video successfully downloaded")
-                            }
-                            else if (info.download.hd == undefined) {
-                                client.sendFileFromUrl(from, info.download.sd, "video.mp4", "SD Video successfully downloaded")  
-                            }
-                            else {
-                                client.reply(from,"Can't access given Video URL.",message)
-                            }
-                        })
-                    }
-                    else {
-                        client.reply(from,"#fb [url video]",message)
+                    if (args.length >=2) {
+                        const urlvid = args[1]
+                        const high = await fbvid.high(urlvid)
+                        const low = await fbvid.low(urlvid)
+                        if (high == "Either the video is deleted or it's not shared publicly!") {
+                            client.sendFileFromUrl(from, low.url, "video.mp4", "SD Video successfully downloaded")
+                        } else if (high !== "Either the video is deleted or it's not shared publicly!") {
+                            client.sendFileFromUrl(from, high.url, "video.mp4", "HD Video successfully downloaded")
+                        } else if (high == "Either the video is deleted or it's not shared publicly!" && low == "Either the video is deleted or it's not shared publicly!") {
+                            client.reply(from,"URL tidak valid / video tidak publik !",message)
+                        }
+                    } else {
+                        client.reply(from,"#fb [URL Video]",message)
                     }
                     break
                 }
